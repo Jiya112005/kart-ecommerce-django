@@ -12,7 +12,8 @@ def _cart_id(request):
 def add_cart(request,product_id):
     #for the functionality of product variation making /color=blue&size=small  --> example
     color = request.GET['color']
-    size = request.GET['size']    # just static value printing use variation model in admin itself
+    size = request.GET['size'] 
+    print(color)# just static value printing use variation model in admin itself
     product = Product.objects.get(id =product_id)
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request)) # get the cart id using the session is present in request
