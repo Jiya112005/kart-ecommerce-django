@@ -23,6 +23,12 @@ variation_category_choice = (
     ('color','color'),
     ('size','size'),
 )
+class VariationManager(models.Manager):  # for showing the different dropdown values using same variation model 
+    def colors(self):
+        return super(VariationManager,self).filter(variation_category='color',is_active=True)
+    
+    def sizes(self):
+        return super(VariationManager,self).filter(variation_category='size',is_active=True)
 
 class Variation(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
@@ -30,6 +36,6 @@ class Variation(models.Model):
     variation_value = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now=True)
-    
-    def __unicode__(self):
-        return self.product
+    objects = VariationManager()
+    def __str__(self):
+        return self.variation_value

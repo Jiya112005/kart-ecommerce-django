@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from store.models import Product
+from store.models import Product,Variation
 from .models import Cart,CartItem
 from django.http import  HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,11 +10,19 @@ def _cart_id(request):
         cart = request.session.create()
     return cart
 def add_cart(request,product_id):
-    #for the functionality of product variation making /color=blue&size=small  --> example
-    color = request.GET['color']
-    size = request.GET['size'] 
-    print(color)# just static value printing use variation model in admin itself
     product = Product.objects.get(id =product_id)
+    product_variation =[]
+    if request.method == "POST":
+    #for the functionality of product variation making /color=blue&size=small  --> example
+        for item in request.POST:
+            key = item
+            value = request.POST[key]
+            # print(key,value)# just static value printing use variation model in admin itself
+            try:
+                variation= Variation.objects.get(product=product,variation_category__iexact =key,variation_value__iexact = value) # checking if the key and value is in variation model or not
+                product_variation.append(variation)
+            except:
+                pass
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request)) # get the cart id using the session is present in request
     except Cart.DoesNotExist:
